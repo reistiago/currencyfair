@@ -25,7 +25,7 @@ public class MainVerticle extends AbstractVerticle {
         Completable webServer = RxHelper.deployVerticle(this.vertx, new WebServerVerticle()).toCompletable();
         Completable socketPushVerticle = RxHelper.deployVerticle(this.vertx, new SocketPushVerticle()).toCompletable();
 
-        Completable.concat( Arrays.asList(webServer, socketPushVerticle))
+        Completable.concat(Arrays.asList(webServer, socketPushVerticle))
                 .subscribe(startFuture::complete, startFuture::fail);
 
     }
