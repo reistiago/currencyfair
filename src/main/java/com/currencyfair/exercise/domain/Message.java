@@ -6,12 +6,30 @@ public class Message {
 
     private String userId;
     private String currencyFrom;
-    private double amountSell;
-    private double amountBuy;
-    private double rate;
+    private Double amountSell;
+    private Double amountBuy;
+    private Double rate;
     private String timePlaced;
     private String originatingCountry;
     private String currencyTo;
+
+    /**
+     * Ctor to be used by jackson
+     */
+    public Message() {
+        // no op
+    }
+
+    private Message(Builder builder) {
+        this.userId = builder.userId;
+        this.currencyFrom = builder.currencyFrom;
+        this.amountSell = builder.amountSell;
+        this.amountBuy = builder.amountBuy;
+        this.rate = builder.rate;
+        this.timePlaced = builder.timePlaced;
+        this.originatingCountry = builder.originatingCountry;
+        this.currencyTo = builder.currencyTo;
+    }
 
 
     public String getUserId() {
@@ -30,7 +48,7 @@ public class Message {
         this.currencyFrom = currencyFrom;
     }
 
-    public double getAmountSell() {
+    public Double getAmountSell() {
         return amountSell;
     }
 
@@ -38,7 +56,7 @@ public class Message {
         this.amountSell = amountSell;
     }
 
-    public double getAmountBuy() {
+    public Double getAmountBuy() {
         return amountBuy;
     }
 
@@ -46,7 +64,7 @@ public class Message {
         this.amountBuy = amountBuy;
     }
 
-    public double getRate() {
+    public Double getRate() {
         return rate;
     }
 
@@ -109,5 +127,60 @@ public class Message {
                 ", originatingCountry='" + originatingCountry + '\'' +
                 ", currencyTo='" + currencyTo + '\'' +
                 '}';
+    }
+
+    public static final class Builder {
+        private String userId;
+        private String currencyFrom;
+        private Double amountSell;
+        private Double amountBuy;
+        private Double rate;
+        private String timePlaced;
+        private String originatingCountry;
+        private String currencyTo;
+
+        public Builder withUserId(final String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder withCurrencyFrom(final String currencyFrom) {
+            this.currencyFrom = currencyFrom;
+            return this;
+        }
+
+        public Builder withAmountSell(final Double amountSell) {
+            this.amountSell = amountSell;
+            return this;
+        }
+
+        public Builder withAmountBuy(final Double amountBuy) {
+            this.amountBuy = amountBuy;
+            return this;
+        }
+
+        public Builder withRate(final Double rate) {
+            this.rate = rate;
+            return this;
+        }
+
+        public Builder withTimePlaced(final String timePlaced) {
+            this.timePlaced = timePlaced;
+            return this;
+        }
+
+        public Builder withOriginatingCountry(final String originatingCountry) {
+            this.originatingCountry = originatingCountry;
+            return this;
+        }
+
+        public Builder withCurrencyTo(final String currencyTo) {
+            this.currencyTo = currencyTo;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(this);
+        }
     }
 }
