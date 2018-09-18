@@ -44,7 +44,7 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
     }
 
     private void setupStaticResourcesRoute(final Router router) {
-        router.route("/").handler(StaticHandler.create());
+        router.route("/*").handler(StaticHandler.create());
     }
 
 
