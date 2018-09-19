@@ -1,5 +1,7 @@
 package com.currencyfair.exercise.domain;
 
+import io.vertx.core.json.JsonObject;
+
 import java.util.Objects;
 
 public class Message {
@@ -127,6 +129,19 @@ public class Message {
                 ", originatingCountry='" + originatingCountry + '\'' +
                 ", currencyTo='" + currencyTo + '\'' +
                 '}';
+    }
+
+    public JsonObject toJsonObject() {
+        return new JsonObject()
+                .put("userId", userId)
+                .put("currencyFrom", currencyFrom)
+                .put("amountSell", amountSell)
+                .put("amountBuy", amountBuy)
+                .put("rate", rate)
+                .put("timePlaced", timePlaced)
+                .put("originatingCountry", originatingCountry)
+                .put("currencyTo", currencyTo);
+
     }
 
     public static final class Builder {

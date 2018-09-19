@@ -19,6 +19,7 @@ public class SocketPushVerticle extends AbstractVerticle implements Loggable {
                 .toFlowable()
                 .subscribe(message -> {
                     logger().info("Received: {0}", message);
+                    this.vertx.eventBus().send(WebServerVerticle.PUBLISH_WEB_MESSAGE_ADDRESS, message.toJsonObject());
                 });
     }
 }

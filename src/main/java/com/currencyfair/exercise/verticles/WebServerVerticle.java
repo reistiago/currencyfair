@@ -5,15 +5,19 @@ import com.currencyfair.exercise.utils.Loggable;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
+import io.vertx.ext.bridge.PermittedOptions;
+import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.StaticHandler;
+import io.vertx.reactivex.ext.web.handler.sockjs.SockJSHandler;
 
 
 public class WebServerVerticle extends AbstractVerticle implements Loggable {
 
     static final String PUBLISH_MESSAGE_ADDRESS = "exercise.raw-message";
+    static final String PUBLISH_WEB_MESSAGE_ADDRESS = "exercise.message";
 
     @Override
     public void start(Future<Void> startFuture) {
@@ -25,6 +29,8 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
         // Setup message ingestion route
         setupIngestionRoute(router);
 
+        setupSockJSRoute(router);
+
         vertx.createHttpServer()
                 .requestHandler(router::accept)
                 .rxListen(8080)
@@ -32,6 +38,15 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
                     logger().info("HTTP server started");
                     startFuture.complete();
                 }, startFuture::fail);
+    }
+
+    private void setupSockJSRoute(Router router) {
+        SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
+        BridgeOptions options = new BridgeOptions()
+                .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_ADDRESS));
+        sockJSHandler.bridge(options);
+
+        router.route("/eventbus/*").handler(sockJSHandler);
     }
 
     private void setupIngestionRoute(final Router router) {
