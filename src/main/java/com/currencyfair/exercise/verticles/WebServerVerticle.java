@@ -80,7 +80,7 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
                 // need to send something in the message even if it is to be discarded later
                 this.vertx.eventBus().send(REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS, "");
             }
-            event.complete();
+            event.complete(true);
         });
 
         router.route(EVENT_BUS_ROUTE).handler(sockJSHandler);
