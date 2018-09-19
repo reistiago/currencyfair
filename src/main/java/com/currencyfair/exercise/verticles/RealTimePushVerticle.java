@@ -8,7 +8,7 @@ import io.vertx.reactivex.core.AbstractVerticle;
 /**
  * Verticle responsible for pushing information to the frontend
  */
-public class SocketPushVerticle extends AbstractVerticle implements Loggable {
+public class RealTimePushVerticle extends AbstractVerticle implements Loggable {
 
     @Override
     public void start(Future<Void> startFuture) {
@@ -18,8 +18,10 @@ public class SocketPushVerticle extends AbstractVerticle implements Loggable {
                 .bodyStream()
                 .toFlowable()
                 .subscribe(message -> {
-                    logger().info("Received: {0}", message);
-                    this.vertx.eventBus().publish(WebServerVerticle.PUBLISH_WEB_MESSAGE_ADDRESS, message.toJsonObject());
+                    logger().trace("Received: {0}", message);
+                    this.vertx.eventBus().publish(WebServerVerticle.PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS, message.toJsonObject());
                 });
+
+        startFuture.complete();
     }
 }

@@ -1,22 +1,34 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import EventBus from 'vertx3-eventbus-client'
 import './App.css';
-import Table from './Table.js'
+import RealTimeTable from './RealTimeTable.js'
+import TopTraded from './TopTraded.js'
+import {Grid} from 'semantic-ui-react';
 
 class App extends Component {
     state = {
-        rows: []
+        liveRows: [],
+        topTraded: [],
     };
+
     render() {
-        const {rows }= this.state;
+        const {liveRows} = this.state;
+        const {topTraded} = this.state;
         return (
             <div className="App">
                 <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h1 className="App-title">Welcome to React</h1>
+                    <h1 className="App-title">currency fair</h1>
                 </header>
-                <Table rows={rows}/>
+                <div className="App-body">
+                    <Grid celled>
+                        <Grid.Column width={13} key='1'>
+                            <RealTimeTable rows={liveRows}/>
+                        </Grid.Column>
+                        <Grid.Column width={3} key='2'>
+                            <TopTraded rows={topTraded}/>
+                        </Grid.Column>
+                    </Grid>
+                </div>
             </div>
         );
     }
@@ -24,18 +36,27 @@ class App extends Component {
     componentDidMount() {
         let eb = new EventBus('http://localhost:8080/eventbus');
 
-        eb.onopen =  () =>{
+        eb.onopen = () => {
             // set a handler to receive a message
-            eb.registerHandler('exercise.message',  (error, message) =>{
-                console.log(typeof message);
-                console.log(message);
-
-                console.log(message.body);
+            eb.registerHandler('realtime.messages', (error, message) => {
                 this.setState((prevState) => {
-                    const newRows = [...prevState.rows, message.body];
+                    // only keep the last 10 entries
+                    let newRows = [];
+                    if (prevState.liveRows.length === 10) {
+                        const liveRows = [...prevState.liveRows];
+                        liveRows.pop();
+                        liveRows.unshift(message.body);
+                        newRows = liveRows;
+                    } else {
+                        newRows = [message.body, ...prevState.liveRows];
+                    }
 
-                    return {rows: newRows};
+                    return {liveRows: newRows};
                 })
+            });
+
+            eb.registerHandler('traded.pairs.message', (error, message) => {
+                this.setState({topTraded: message.body});
             });
         }
     }

@@ -3,7 +3,8 @@ package com.currencyfair.exercise;
 
 import com.currencyfair.exercise.domain.Message;
 import com.currencyfair.exercise.domain.MessageCodec;
-import com.currencyfair.exercise.verticles.SocketPushVerticle;
+import com.currencyfair.exercise.verticles.CurrencyTradeCounterVerticle;
+import com.currencyfair.exercise.verticles.RealTimePushVerticle;
 import com.currencyfair.exercise.verticles.WebServerVerticle;
 import io.reactivex.Completable;
 import io.vertx.core.Future;
@@ -23,11 +24,11 @@ public class MainVerticle extends AbstractVerticle {
         this.registerCustomCodecs();
 
         Completable webServer = RxHelper.deployVerticle(this.vertx, new WebServerVerticle()).toCompletable();
-        Completable socketPushVerticle = RxHelper.deployVerticle(this.vertx, new SocketPushVerticle()).toCompletable();
+        Completable realTimePusher = RxHelper.deployVerticle(this.vertx, new RealTimePushVerticle()).toCompletable();
+        Completable currencyTradeCounter = RxHelper.deployVerticle(this.vertx, new CurrencyTradeCounterVerticle()).toCompletable();
 
-        Completable.concat(Arrays.asList(webServer, socketPushVerticle))
+        Completable.concat(Arrays.asList(webServer, realTimePusher, currencyTradeCounter))
                 .subscribe(startFuture::complete, startFuture::fail);
-
     }
 
     private void registerCustomCodecs() {

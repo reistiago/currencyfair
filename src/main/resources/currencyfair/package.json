@@ -6,6 +6,7 @@
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
     "react-scripts": "1.1.5",
+    "semantic-ui-react": "^0.82.5",
     "vertx3-eventbus-client": "^3.5.3"
   },
   "scripts": {
@@ -14,5 +15,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postbuild": "cp -r build/* ../webroot"
+  },
+  "devDependencies": {
+    "ajv": "^6.5.3"
   }
 }
