@@ -43,6 +43,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
                 .buffer(5, TimeUnit.SECONDS, 1000)
                 .subscribe(this::accept);
 
+        // register event to handle when a new client register on the eventbus
         this.vertx.eventBus().<String>consumer(WebServerVerticle.REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS)
                 .bodyStream()
                 .toFlowable()
