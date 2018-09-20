@@ -74,12 +74,14 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
                 .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS))
                 .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS));
         sockJSHandler.bridge(options, event -> {
-
-            // check if a client is connecting to request top traded pairs and send a message asking to publish the current data
-            if (BridgeEventType.REGISTER.equals(event.type()) && PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS.equals(event.getRawMessage().getString("address"))) {
-                // need to send something in the message even if it is to be discarded later
-                this.vertx.eventBus().send(REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS, "");
-            }
+            // send execution to the end of the context / event loop
+            vertx.runOnContext(aVoid -> {
+                // check if a client is connecting to request top traded pairs and send a message asking to publish the current data
+                if (BridgeEventType.REGISTER.equals(event.type()) && PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS.equals(event.getRawMessage().getString("address"))) {
+                    // need to send something in the message even if it is to be discarded later
+                    this.vertx.eventBus().send(REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS, "");
+                }
+            });
             event.complete(true);
         });
 
