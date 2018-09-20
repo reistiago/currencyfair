@@ -4,7 +4,7 @@ Implementation of a system that receives a payload using http and pushes the dat
 
 Server implemented using [Vert.x](https://vertx.io) and the basic frontend is built on [React](https://reactjs.org).
 
-Frontend app was bootstrapped with  [Create React App](https://github.com/facebook/create-react-app)
+Frontend app was bootstrapped with  [Create React App](https://github.com/facebook/create-react-app).
 
 ## Dependencies
 
@@ -37,9 +37,9 @@ To run the frontend locally for development:
  - Navigate to `{project root}/src/main/resources/currencyfair`
  - Run `$ npm run start-local`
  
-To run the backend for development:
+To run the backend locally for development:
  
-Depending on your IDE the way to configure it may vary but the main configuration details are
+Depending on your IDE the way to configure it may vary but the main configuration details are:
 
  - Main class: `io.vertx.core.Launcher`
  - Program arguments: `run com.currencyfair.exercise.MainVerticle`
