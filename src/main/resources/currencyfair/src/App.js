@@ -34,7 +34,10 @@ class App extends Component {
     }
 
     componentDidMount() {
-        let eb = new EventBus('http://localhost:8080/eventbus');
+
+        const backend = process.env.REACT_APP_BACKEND || window.location.protocol + '//' + window.location.host;
+
+        const eb = new EventBus(backend + '/eventbus');
 
         eb.onopen = () => {
             // set a handler to receive a message

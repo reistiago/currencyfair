@@ -4,18 +4,20 @@ Implementation of a system that receives a payload using http and pushes the dat
 
 Server implemented using [Vert.x](https://vertx.io) and the basic frontend is built on [React](https://reactjs.org).
 
+Frontend app was bootstrap with  [Create React App](https://github.com/facebook/create-react-app)
+
 ## Dependencies
 
  * Java 8
  * Maven
  * Node >= 6
  * NPM
- * [Create React App](https://github.com/facebook/create-react-app)
+
  
 ## Building
 
  - Clone the project
- - Navigate to {project root}/src/main/resources/currencyfair
+ - Navigate to `{project root}/src/main/resources/currencyfair`
  - Run `$ npm install` to install node dependencies for the frontend application
  - Navigate to the {project root}
  - Run `$ mvn clean package`
@@ -27,3 +29,17 @@ Server implemented using [Vert.x](https://vertx.io) and the basic frontend is bu
 For deployment simplicity the FE app is served by the Vert.x application, so we only need to run the created jar
 
 `java -jar target/exercise-fat.jar`
+
+## Development
+
+To run the frontend locally for development: 
+
+ - Navigate to `{project root}/src/main/resources/currencyfair`
+ - Run `$ npm run start-local`
+ 
+To run the backend for development:
+ 
+Depending on your IDE the way to configure it may vary but the main configuration details are
+
+ - Main class: `io.vertx.core.Launcher`
+ - Program arguments: `run com.currencyfair.exercise.MainVerticle`
