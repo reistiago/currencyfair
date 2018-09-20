@@ -4,7 +4,7 @@ Implementation of a system that receives a payload using http and pushes the dat
 
 Server implemented using [Vert.x](https://vertx.io) and the basic frontend is built on [React](https://reactjs.org).
 
-Frontend app was bootstrap with  [Create React App](https://github.com/facebook/create-react-app)
+Frontend app was bootstrapped with  [Create React App](https://github.com/facebook/create-react-app)
 
 ## Dependencies
 
