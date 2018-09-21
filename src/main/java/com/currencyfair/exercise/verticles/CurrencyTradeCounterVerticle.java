@@ -19,6 +19,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * Verticle responsible for maintaining a counter of messages traded by currency pair
  * Allows understanding which pair is traded more often.
  * <p>
+ * To reduce load on the frontend this buffers and publishes data periodically
+ * <p>
  * Only publishes the top 10 currency pairs
  */
 public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Loggable {
@@ -30,7 +32,8 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
     @Override
     public void start(final Future<Void> startFuture) {
 
-        Long delay = this.config().getLong("trade.counter.delay", 10000L);
+        final Long delay = this.config().getLong("trade.counter.delay", 5000L);
+        final Long buffer = this.config().getLong("trade.buffer.delay", 5L);
 
         // register event to handle messages
         this.vertx.eventBus().<Message>consumer(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS)
@@ -38,7 +41,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
                 .toFlowable()
                 // Batch requests
                 .filter(message -> currenciesDefined(message.getCurrencyFrom(), message.getCurrencyTo()))
-                .buffer(5, TimeUnit.SECONDS, 1000)
+                .buffer(buffer, TimeUnit.SECONDS, 1000)
                 .subscribe(this::accept);
 
         // register event to handle when a new client register on the eventbus

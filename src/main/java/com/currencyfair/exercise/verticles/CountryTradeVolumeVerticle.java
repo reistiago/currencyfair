@@ -18,6 +18,8 @@ import static java.util.Objects.nonNull;
 
 /**
  * Verticle responsible for calculating the number of trades per country
+ *
+ * To reduce load on the frontend this buffers and publishes data periodically
  */
 public class CountryTradeVolumeVerticle extends AbstractVerticle implements Loggable {
 
@@ -26,7 +28,8 @@ public class CountryTradeVolumeVerticle extends AbstractVerticle implements Logg
     @Override
     public void start(final Future<Void> startFuture) {
 
-        Long delay = this.config().getLong("trade.counter.delay", 10000L);
+        final Long delay = this.config().getLong("country.trades.delay", 5000L);
+        final Long buffer = this.config().getLong("country.buffer.delay", 5L);
 
         // register event to handle messages
         this.vertx.eventBus().<Message>consumer(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS)
@@ -35,7 +38,7 @@ public class CountryTradeVolumeVerticle extends AbstractVerticle implements Logg
                 // Batch requests
                 .filter(message -> !isNullOrEmpty(message.getOriginatingCountry()) && !message.getOriginatingCountry().trim().isEmpty())
                 .filter(message -> nonNull(message.getAmountBuy()))
-                .buffer(5, TimeUnit.SECONDS, 1000)
+                .buffer(buffer, TimeUnit.SECONDS, 1000)
                 .subscribe(this::accept);
 
         // configure a event that country trades
@@ -66,7 +69,6 @@ public class CountryTradeVolumeVerticle extends AbstractVerticle implements Logg
             this.vertx.eventBus().publish(PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS, toSend);
         }
     }
-
 
     /**
      * Consumes a message and counts the number of messages sent to trade a particular pair

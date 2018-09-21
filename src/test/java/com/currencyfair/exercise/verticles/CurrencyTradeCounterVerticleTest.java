@@ -26,7 +26,9 @@ class CurrencyTradeCounterVerticleTest {
         vertx.eventBus().registerDefaultCodec(Message.class, new MessageCodec());
         vertx.deployVerticle(new CurrencyTradeCounterVerticle(),
                 // Make verticle push data every 1 second to make the test run faster
-                new DeploymentOptions().setConfig(new JsonObject().put("trade.counter.delay", 1000)),
+                new DeploymentOptions().setConfig(new JsonObject()
+                        .put("trade.counter.delay", 10)
+                        .put("trade.buffer.delay", 1)),
                 event -> testContext.completeNow());
     }
 
@@ -64,7 +66,7 @@ class CurrencyTradeCounterVerticleTest {
 
     @Test
     void testMessagesAreGrouped(Vertx vertx, VertxTestContext testContext) {
-      
+
         vertx.eventBus().<JsonArray>consumer(WebServerVerticle.PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS, event -> {
 
             JsonArray content = event.body();
