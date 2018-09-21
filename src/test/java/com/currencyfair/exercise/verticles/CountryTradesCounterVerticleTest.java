@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @ExtendWith(VertxExtension.class)
-class CountryTradeVolumeVerticleTest {
+class CountryTradesCounterVerticleTest {
 
     @BeforeEach
     void setup(Vertx vertx, VertxTestContext testContext) {
         vertx.eventBus().registerDefaultCodec(Message.class, new MessageCodec());
-        vertx.deployVerticle(new CurrencyTradeCounterVerticle(),
+        vertx.deployVerticle(new CountryTradesCounterVerticle(),
                 // Make verticle push data every 1 second to make the test run faster
                 new DeploymentOptions().setConfig(new JsonObject()
                         .put("country.trades.delay", 10)

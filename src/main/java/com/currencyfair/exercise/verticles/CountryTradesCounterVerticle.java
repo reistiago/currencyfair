@@ -21,7 +21,7 @@ import static java.util.Objects.nonNull;
  *
  * To reduce load on the frontend this buffers and publishes data periodically
  */
-public class CountryTradeVolumeVerticle extends AbstractVerticle implements Loggable {
+public class CountryTradesCounterVerticle extends AbstractVerticle implements Loggable {
 
     private final LongCounter counter = new LongCounter();
 
