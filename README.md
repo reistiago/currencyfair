@@ -55,6 +55,14 @@ of adding new Verticles that would handle that specific feature.
 Given the code simplicity there is no dependency injection mechanism put in place, if the code continues evolve and become more complex [Guice](https://github.com/google/guice)
 ) could be added.
 
+## Details
+
+Endpoint to ingest metrics is available at
+`/ingestion`
+
+Expects/consumes: `application/json; charset=utf-8`
+
+
 ## Limitations
 
  - Current implementation doesn't persist data, so if the server is restarted all data is lost.
