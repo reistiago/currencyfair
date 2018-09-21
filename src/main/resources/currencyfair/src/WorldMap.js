@@ -286,7 +286,7 @@ class WorldMap extends PureComponent {
         const images = [];
         countries.forEach((dataItem) => {
             let countValue = dataItem.counter;
-            let square = (value - min) / (max - min) * (maxSquare - minSquare) + minSquare;
+            let square = (countValue - min) / (max - min) * (maxSquare - minSquare) + minSquare;
             if (square < minSquare) {
                 square = minSquare;
             }
