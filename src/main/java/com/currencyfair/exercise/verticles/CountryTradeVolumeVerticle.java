@@ -8,6 +8,8 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.reactivex.core.AbstractVerticle;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.currencyfair.exercise.verticles.WebServerVerticle.PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS;
@@ -33,6 +35,7 @@ public class CountryTradeVolumeVerticle extends AbstractVerticle implements Logg
                 // Batch requests
                 .filter(message -> !isNullOrEmpty(message.getOriginatingCountry()) && !message.getOriginatingCountry().trim().isEmpty())
                 .filter(message -> nonNull(message.getAmountBuy()))
+                .buffer(5, TimeUnit.SECONDS, 1000)
                 .subscribe(this::accept);
 
         // configure a event that country trades
@@ -68,9 +71,10 @@ public class CountryTradeVolumeVerticle extends AbstractVerticle implements Logg
     /**
      * Consumes a message and counts the number of messages sent to trade a particular pair
      */
-    private void accept(final Message message) {
-
-        final String mapKey = message.getOriginatingCountry().trim().toUpperCase();
-        counter.incrementByKey(mapKey);
+    private void accept(final List<Message> messages) {
+        messages.forEach(message -> {
+            final String mapKey = message.getOriginatingCountry().trim().toUpperCase();
+            counter.incrementByKey(mapKey);
+        });
     }
 }
