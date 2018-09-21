@@ -5,7 +5,7 @@ class RealTimeTable extends PureComponent {
     render() {
         const {rows} = this.props;
         return (
-            <Fragment> <h3>Live data</h3>
+            <Fragment> <h3>Real time data</h3>
                 <Table celled inverted>
                     <Table.Header>
                         <Table.Row key={`realtime-header`}>

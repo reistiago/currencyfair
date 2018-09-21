@@ -3,15 +3,13 @@ package com.currencyfair.exercise.verticles;
 import com.currencyfair.exercise.domain.Message;
 import com.currencyfair.exercise.domain.TopTraded;
 import com.currencyfair.exercise.utils.Loggable;
+import com.currencyfair.exercise.utils.LongCounter;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.reactivex.core.AbstractVerticle;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import static com.currencyfair.exercise.verticles.WebServerVerticle.PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS;
@@ -27,10 +25,10 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
 
     private static final int LIMIT = 10;
 
-    private Map<String, LongAdder> currencyMap = new HashMap<>();
+    private final LongCounter longCounter = new LongCounter();
 
     @Override
-    public void start(Future<Void> startFuture) {
+    public void start(final Future<Void> startFuture) {
 
         Long delay = this.config().getLong("trade.counter.delay", 10000L);
 
@@ -39,7 +37,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
                 .bodyStream()
                 .toFlowable()
                 // Batch requests
-                .filter( message -> currenciesDefined(message.getCurrencyFrom(), message.getCurrencyTo()))
+                .filter(message -> currenciesDefined(message.getCurrencyFrom(), message.getCurrencyTo()))
                 .buffer(5, TimeUnit.SECONDS, 1000)
                 .subscribe(this::accept);
 
@@ -72,8 +70,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
      * Calculates the most traded pairs and pushes the top 10 to the FE
      */
     private void publish() {
-        JsonArray toSend = new JsonArray(currencyMap.entrySet()
-                .stream()
+        JsonArray toSend = new JsonArray(longCounter.getEntries()
                 .map((entry) -> new TopTraded.Builder().withPair(entry.getKey()).withValue(entry.getValue().longValue()))
                 .map(TopTraded.Builder::build)
                 .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
@@ -92,18 +89,11 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
      */
     private void accept(final List<Message> messages) {
 
-      messages.forEach(message -> {
-          // Find currency pair, and increase the counter
-          String mapKey = message.getCurrencyFrom() + " / " + message.getCurrencyTo();
-
-          currencyMap.compute(mapKey, (key, value) -> {
-              if (value == null) {
-                  value = new LongAdder();
-              }
-              value.increment();
-              return value;
-          });
-      });
+        messages.forEach(message -> {
+            // Find currency pair, and increase the counter
+            String mapKey = message.getCurrencyFrom() + " / " + message.getCurrencyTo();
+            longCounter.incrementByKey(mapKey);
+        });
     }
 
     private boolean currenciesDefined(final String currencyFrom, final String currencyTo) {

@@ -23,6 +23,7 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
     static final String PUBLISH_MESSAGE_ADDRESS = "exercise.raw-message";
     static final String PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS = "realtime.messages";
     static final String PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS = "traded.pairs.message";
+    static final String PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS = "country.trade.message";
     static final String REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS = "request.traded.pairs.message";
 
     /**
@@ -72,7 +73,8 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
         SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
         BridgeOptions options = new BridgeOptions()
                 .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS))
-                .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS));
+                .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS))
+                .addOutboundPermitted(new PermittedOptions().setAddress(PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS));
         sockJSHandler.bridge(options, event -> {
             // send execution to the end of the context / event loop
             vertx.runOnContext(aVoid -> {

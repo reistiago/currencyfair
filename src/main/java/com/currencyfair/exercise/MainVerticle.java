@@ -3,6 +3,7 @@ package com.currencyfair.exercise;
 
 import com.currencyfair.exercise.domain.Message;
 import com.currencyfair.exercise.domain.MessageCodec;
+import com.currencyfair.exercise.verticles.CountryTradeVolumeVerticle;
 import com.currencyfair.exercise.verticles.CurrencyTradeCounterVerticle;
 import com.currencyfair.exercise.verticles.RealTimePushVerticle;
 import com.currencyfair.exercise.verticles.WebServerVerticle;
@@ -26,8 +27,9 @@ public class MainVerticle extends AbstractVerticle {
         Completable webServer = RxHelper.deployVerticle(this.vertx, new WebServerVerticle()).toCompletable();
         Completable realTimePusher = RxHelper.deployVerticle(this.vertx, new RealTimePushVerticle()).toCompletable();
         Completable currencyTradeCounter = RxHelper.deployVerticle(this.vertx, new CurrencyTradeCounterVerticle()).toCompletable();
+        Completable countryTradeVolume = RxHelper.deployVerticle(this.vertx, new CountryTradeVolumeVerticle()).toCompletable();
 
-        Completable.concat(Arrays.asList(webServer, realTimePusher, currencyTradeCounter))
+        Completable.concat(Arrays.asList(webServer, realTimePusher, currencyTradeCounter, countryTradeVolume))
                 .subscribe(startFuture::complete, startFuture::fail);
     }
 

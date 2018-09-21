@@ -4,22 +4,26 @@ import './App.css';
 import RealTimeTable from './RealTimeTable.js'
 import TopTraded from './TopTraded.js'
 import {Grid} from 'semantic-ui-react';
+import WorldMap from './WorldMap'
 
 class App extends Component {
     state = {
         liveRows: [],
         topTraded: [],
+        countryTraded: []
     };
 
     render() {
         const {liveRows} = this.state;
         const {topTraded} = this.state;
+        const {countryTraded} = this.state;
         return (
             <div className="App">
                 <header className="App-header">
                     <h1 className="App-title">currency fair</h1>
                 </header>
                 <div className="App-body">
+
                     <Grid celled>
                         <Grid.Column width={13} key='1'>
                             <RealTimeTable rows={liveRows}/>
@@ -28,6 +32,7 @@ class App extends Component {
                             <TopTraded rows={topTraded}/>
                         </Grid.Column>
                     </Grid>
+                    <WorldMap countries={countryTraded}/>
                 </div>
             </div>
         );
@@ -60,6 +65,10 @@ class App extends Component {
 
             eb.registerHandler('traded.pairs.message', (error, message) => {
                 this.setState({topTraded: message.body});
+            });
+
+            eb.registerHandler('country.trade.message', (error, message) => {
+                this.setState({countryTraded: message.body});
             });
         }
     }
