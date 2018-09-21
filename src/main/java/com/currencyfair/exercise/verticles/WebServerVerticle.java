@@ -15,17 +15,13 @@ import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.StaticHandler;
 import io.vertx.reactivex.ext.web.handler.sockjs.SockJSHandler;
 
+import static com.currencyfair.exercise.utils.Addresses.*;
+
 /**
  * Verticle responsible for starting an http server. Configures routes, handlers and the event bus bridge to allow communication with the FE
  */
 public class WebServerVerticle extends AbstractVerticle implements Loggable {
-
-    static final String PUBLISH_MESSAGE_ADDRESS = "exercise.raw-message";
-    static final String PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS = "realtime.messages";
-    static final String PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS = "traded.pairs.message";
-    static final String PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS = "country.trade.message";
-    static final String REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS = "request.traded.pairs.message";
-
+    
     /**
      * Default http port, one is provided
      */
@@ -67,7 +63,7 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
     /**
      * Setup SockJs route and handler for "real-time" communication with the FE.
      * <p>
-     * Configures which addresses are exposed from the FE
+     * Configures which addresses are exposed to the FE
      */
     private void setupSockJSRoute(Router router) {
         SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
@@ -88,7 +84,6 @@ public class WebServerVerticle extends AbstractVerticle implements Loggable {
         });
 
         router.route(EVENT_BUS_ROUTE).handler(sockJSHandler);
-
 
     }
 

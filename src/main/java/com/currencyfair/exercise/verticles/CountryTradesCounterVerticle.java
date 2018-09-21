@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.currencyfair.exercise.verticles.WebServerVerticle.PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_MESSAGE_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.nonNull;
 
 /**
  * Verticle responsible for calculating the number of trades per country
- *
+ * <p>
  * To reduce load on the frontend this buffers and publishes data periodically
  */
 public class CountryTradesCounterVerticle extends AbstractVerticle implements Loggable {
@@ -32,7 +33,7 @@ public class CountryTradesCounterVerticle extends AbstractVerticle implements Lo
         final Long buffer = this.config().getLong("country.buffer.delay", 5L);
 
         // register event to handle messages
-        this.vertx.eventBus().<Message>consumer(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS)
+        this.vertx.eventBus().<Message>consumer(PUBLISH_MESSAGE_ADDRESS)
                 .bodyStream()
                 .toFlowable()
                 // Batch requests
@@ -44,21 +45,16 @@ public class CountryTradesCounterVerticle extends AbstractVerticle implements Lo
         // configure a event that country trades
         this.vertx.periodicStream(delay)
                 .toFlowable()
-                .subscribe(this::periodicPublish);
+                .subscribe(this::publish);
 
         startFuture.complete();
-    }
-
-
-    private void periodicPublish(Long timer) {
-        logger().trace("Timer called {0}", timer);
-        publish();
     }
 
     /**
      * Calculates the most traded pairs and pushes the top 10 to the FE
      */
-    private void publish() {
+    private void publish(Long timer) {
+        logger().trace("Timer called {0}", timer);
         JsonArray toSend = new JsonArray(counter.getEntries()
                 .map((entry) -> new CountryTraded.Builder().withCountry(entry.getKey()).withCounter(entry.getValue().longValue()))
                 .map(CountryTraded.Builder::build)

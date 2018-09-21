@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_MESSAGE_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(VertxExtension.class)
@@ -25,7 +27,7 @@ class RealTimePushVerticleTest {
 
     @Test
     void testMessagesArePushed(Vertx vertx, VertxTestContext testContext) {
-        vertx.eventBus().<JsonObject>consumer(WebServerVerticle.PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS, event -> {
+        vertx.eventBus().<JsonObject>consumer(PUBLISH_WEB_MESSAGE_REALTIME_ADDRESS, event -> {
             final String something = event.body().getString("userId");
             testContext.verify(() -> {
                 assertEquals(MY_ID, something);
@@ -33,7 +35,7 @@ class RealTimePushVerticleTest {
             });
         });
 
-        vertx.eventBus().<Message>send(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS,
+        vertx.eventBus().<Message>send(PUBLISH_MESSAGE_ADDRESS,
                 new Message.Builder().withUserId(MY_ID)
                         .build());
     }

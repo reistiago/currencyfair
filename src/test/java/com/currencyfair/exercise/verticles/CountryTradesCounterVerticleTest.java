@@ -15,6 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_MESSAGE_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS;
+
 @ExtendWith(VertxExtension.class)
 class CountryTradesCounterVerticleTest {
 
@@ -33,13 +36,13 @@ class CountryTradesCounterVerticleTest {
     void testMessagesEmptyCountryAreIgnored(Vertx vertx, VertxTestContext testContext) throws InterruptedException {
 
         // Fail if any message is received
-        vertx.eventBus().<JsonObject>consumer(WebServerVerticle.PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS, event -> {
+        vertx.eventBus().<JsonObject>consumer(PUBLISH_WEB_MESSAGE_COUNTRY_TRADE_ADDRESS, event -> {
             // if we get a message it means that a message was pushed and not ignored
             testContext.verify(Assertions::fail);
         });
 
         Stream.of(null, "", " ").forEach(value ->
-                vertx.eventBus().<Message>send(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS,
+                vertx.eventBus().<Message>send(PUBLISH_MESSAGE_ADDRESS,
                         new Message.Builder().withOriginatingCountry(value).build()));
 
         testContext.awaitCompletion(2, TimeUnit.SECONDS);

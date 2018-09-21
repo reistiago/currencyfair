@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.currencyfair.exercise.verticles.WebServerVerticle.PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_MESSAGE_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.PUBLISH_WEB_MESSAGE_TRADED_PAIRS_ADDRESS;
+import static com.currencyfair.exercise.utils.Addresses.REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
@@ -36,7 +38,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
         final Long buffer = this.config().getLong("trade.buffer.delay", 5L);
 
         // register event to handle messages
-        this.vertx.eventBus().<Message>consumer(WebServerVerticle.PUBLISH_MESSAGE_ADDRESS)
+        this.vertx.eventBus().<Message>consumer(PUBLISH_MESSAGE_ADDRESS)
                 .bodyStream()
                 .toFlowable()
                 // Batch requests
@@ -45,7 +47,7 @@ public class CurrencyTradeCounterVerticle extends AbstractVerticle implements Lo
                 .subscribe(this::accept);
 
         // register event to handle when a new client register on the eventbus
-        this.vertx.eventBus().<String>consumer(WebServerVerticle.REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS)
+        this.vertx.eventBus().<String>consumer(REQUEST_WEB_MESSAGE_TRADED_PAIRS_ADDRESS)
                 .bodyStream()
                 .toFlowable()
                 .subscribe(this::requestPublish);
