@@ -73,4 +73,4 @@ Expects/consumes: `application/json; charset=utf-8`
  
 ## Deployment
 
-Currently deployed on [AWS Fargate](https://aws.amazon.com/fargate/).
+Currently deployed on [AWS Fargate](https://aws.amazon.com/fargate/) in the Oregon region. 
