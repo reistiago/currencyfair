@@ -66,9 +66,9 @@ Expects/consumes: `application/json; charset=utf-8`
 
  - Current implementation doesn't persist data, so if the server is restarted all data is lost.
  - While vertx event bus supports clustering the current implementation, given that there is no shared data, would not work. This could be handled either by using a persistence 
- mechanism or a in memory distributed cache ([hazelcast](https://hazelcast.org) could be an option)
- - The application is not exposing metrics
- - The event bus doesn't provide out of the box guaranteed delivery, only best effort, so some messages can be lost and there is no application logic to handle that
+ mechanism or a in memory distributed cache ([hazelcast](https://hazelcast.org) could be an option).
+ - The application is not exposing metrics.
+ - The event bus doesn't provide out of the box guaranteed delivery, only best effort, so some messages can be lost and there is no application logic to handle that.
  
 ## Deployment
 
