@@ -52,7 +52,7 @@ a message on the event bus.
 Then there is a verticle for each "feature", being pushing directly to the FE, or calculating which trading pairs are most traded. Adding new features would be a question
 of adding new Verticles that would handle that specific feature.
 
-Given the code simplicity there is no dependency injection mechanism put in place, if the code continues evolve and become more complex [Guice](https://github.com/google/guice)could be added to manage DI.
+Given the code simplicity there is no dependency injection mechanism put in place, if the code continues evolve and become more complex [Guice](https://github.com/google/guice) could be added to manage DI.
 
 ## Details
 
