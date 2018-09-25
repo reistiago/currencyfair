@@ -70,6 +70,27 @@ Expects/consumes: `application/json; charset=utf-8`
  - The application is not exposing metrics.
  - The event bus doesn't provide out of the box guaranteed delivery, only best effort, so some messages can be lost and there is no application logic to handle that.
  
+ ## Stress testing
+ 
+ On the folder named `vegeta` there is a simple test config file tha can be executed with [Vegeta](https://github.com/tsenart/vegeta).
+ 
+ On my local enviroment (2015 Macbook Pro 15') I get the folowing test results:
+ 
+ ```
+ 
+ $ vegeta attack -rate=2000 -duration=30s -targets=vegeta-config | vegeta report
+ Requests      [total, rate]            60000, 2000.13
+ Duration      [total, attack, wait]    29.998342079s, 29.998119752s, 222.327µs
+ Latencies     [mean, 50, 95, 99, max]  175.392µs, 149.371µs, 251.138µs, 495.858µs, 14.777566ms
+ Bytes In      [total, mean]            0, 0.00
+ Bytes Out     [total, mean]            11200000, 186.67
+ Success       [ratio]                  100.00%
+ Status Codes  [code:count]             200:60000
+ 
+ ```
+ 
+ These results were with a single UI (browser) being updated in real time.
+ 
 ## Deployment
 
 Currently deployed on [AWS Fargate](https://aws.amazon.com/fargate/) in the Oregon region. 
